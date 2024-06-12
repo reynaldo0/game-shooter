@@ -30,10 +30,16 @@ class soldier(pygame.sprite.Sprite):
         self.direction = 1
         # set flip movement player
         self.flip = False
+        self.animation_list = []
+        self.frame_index = 0
+        self.update_time = pygame.time.get_ticks()
         
-        img = pygame.image.load(f'assets/img/{self.char_type}/Idle/0.png')
-        # Membesarkan gambar 
-        self.image = pygame.transform.scale(img, (int(img.get_width()  * scale), int(img.get_height() * scale)))
+        for i in range(5):
+            img = pygame.image.load(f'assets/img/{self.char_type}/Idle/{i}.png')
+            # scale the images 
+            img = pygame.transform.scale(img, (int(img.get_width()  * scale), int(img.get_height() * scale)))
+            self.animation_list.append(img)
+        self.image = self.animation_list[self.frame_index]
         self.rect = self.image.get_rect()
         self.rect.center = (x,y)
     
@@ -56,6 +62,22 @@ class soldier(pygame.sprite.Sprite):
         self.rect.x += dx 
         self.rect.y += dy
         
+    def update_animation(self):
+        # update animation
+        ANIMATION_COOLDOWN = 100
+        
+        # update image depending on current frame
+        self.image = self.animation_list[self.frame_index]
+        
+        # checkk if enough time has pass slice the last update
+        if pygame.time.get_ticks() - self.update_time > ANIMATION_COOLDOWN:
+            self.update_time = pygame.time.get_ticks()
+            self.frame_index += 1
+        # if the animation has run out the reset back to the start
+        if self.frame_index >= len(self.animation_list):
+            self.frame_index =  0
+        
+    
     def draw(self):
         screen.blit(pygame.transform.flip(self.image, self.flip, False),self.rect)
         
@@ -67,6 +89,7 @@ while run:
     
     clock.tick(FPS)
     draw_bg()
+    player.update_animation()
     player.draw()
     enemy.draw()
     player.move(moving_left, moving_right )
