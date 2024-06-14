@@ -1,4 +1,5 @@
 import pygame
+import os
 
 pygame.init()
 
@@ -36,6 +37,7 @@ class soldier(pygame.sprite.Sprite):
         self.speed = speed
         self.direction = 1
         self.jump = False
+        self.in_air = True
         self.vel_y = 0
         # set flip movement player
         self.flip = False
@@ -44,21 +46,20 @@ class soldier(pygame.sprite.Sprite):
         self.update_time = pygame.time.get_ticks()
         self.action = 0
         
-        temp_list = []
-        for i in range(5):
-            img = pygame.image.load(f'assets/img/{self.char_type}/Idle/{i}.png')
-            # scale the images 
-            img = pygame.transform.scale(img, (int(img.get_width()  * scale), int(img.get_height() * scale)))
-            temp_list.append(img)
-        self.animation_list.append(temp_list)
-        
-        temp_list = []
-        for i in range(6):
-            img = pygame.image.load(f'assets/img/{self.char_type}/Run/{i}.png')
-            # scale the images 
-            img = pygame.transform.scale(img, (int(img.get_width()  * scale), int(img.get_height() * scale)))
-            temp_list.append(img)
-        self.animation_list.append(temp_list)
+        # load all images for the players
+        animation_types = ['Idle','Run','Jump']
+        for animation in animation_types:
+            # reset temporary list of images
+            temp_list = []
+            # count number of files in the folder
+            num_of_frame = len(os.listdir(f'assets/img/{self.char_type}/{animation}'))
+
+            for i in range(num_of_frame):
+                img = pygame.image.load(f'assets/img/{self.char_type}/{animation}/{i}.png')
+                # scale the images 
+                img = pygame.transform.scale(img, (int(img.get_width()  * scale), int(img.get_height() * scale)))
+                temp_list.append(img)
+            self.animation_list.append(temp_list)
         
         self.image = self.animation_list[self.action][self.frame_index]
         self.rect = self.image.get_rect()
@@ -79,10 +80,11 @@ class soldier(pygame.sprite.Sprite):
             self.direction = 1
             
         # jump
-        if self.jump == True:
+        if self.jump == True and self.in_air == False:
             self.vel_y = -11
             self.jump = False
-            
+            self.in_air = True
+
         # set grafity
         self.vel_y += GRAVITY
         if self.vel_y > 10:
@@ -92,6 +94,7 @@ class soldier(pygame.sprite.Sprite):
         # check collision with floor
         if self.rect.bottom + dy > 300:
             dy = 300 - self.rect.bottom
+            self.in_air = False
             
         # update rect position
         self.rect.x += dx 
@@ -137,7 +140,9 @@ while run:
     
     # update player action
     if player.alive:
-        if moving_left or moving_right:
+        if player.in_air:
+            player.update_action(2) # 2 = jump 
+        elif moving_left or moving_right:
             player.update_action(1) # 1 = run 
         else:
             player.update_action(0) # 0 = idle
