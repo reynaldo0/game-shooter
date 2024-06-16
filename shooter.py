@@ -40,6 +40,7 @@ class soldier(pygame.sprite.Sprite):
         self.alive = True
         self.char_type = char_type
         self.speed = speed
+        self.shoot_cooldown = 0
         self.direction = 1
         self.jump = False
         self.in_air = True
@@ -70,6 +71,12 @@ class soldier(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (x,y)
     
+    def update(self):
+        self.update_animation()
+        # update cooldown
+        if self.shoot_cooldown > 0:
+            self.shoot_cooldown -= 1
+
     def move(self, moving_left, moving_right):
         # reser movement variable
         dx = 0
@@ -105,6 +112,12 @@ class soldier(pygame.sprite.Sprite):
         self.rect.x += dx 
         self.rect.y += dy
         
+    def shoot(self):
+        if self.shoot_cooldown == 0:
+            self.shoot_cooldown = 20
+            bullet = Bullet(self.rect.centerx + (0.6 * self.rect.size[0] * self.direction), self.rect.centery, self.direction)
+            bullet_group.add(bullet)
+
     def update_animation(self):
         # update animation
         ANIMATION_COOLDOWN = 100
@@ -140,6 +153,13 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.center = (x, y)
         self.direction = direction
 
+    def update(self):
+        # move bullet
+        self.rect.x += (self.direction * self.speed)
+        # bullet of screen 
+        if self.rect.right < 0 or self.rect.left > SCREEN_WIDTH:
+            self.kill()
+
 # create sprite group
 bullet_group = pygame.sprite.Group()
 
@@ -152,7 +172,7 @@ while run:
     
     clock.tick(FPS)
     draw_bg()
-    player.update_animation()
+    player.update()
     player.draw()
     enemy.draw()
 
@@ -164,8 +184,7 @@ while run:
     if player.alive:
         # shoot bullets
         if shoot:   
-            bullet = Bullet(player.rect.centerx, player.rect.centery, player.direction)
-            bullet_group.add(bullet)
+            player.shoot()
         if player.in_air:
             player.update_action(2) # 2 = jump 
         elif moving_left or moving_right:
