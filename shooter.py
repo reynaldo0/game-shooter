@@ -20,6 +20,7 @@ GRAVITY = 0.75
 moving_left = False
 moving_right = False
 shoot = False
+grenade = False
 
 # load images
 # bullet
@@ -201,6 +202,7 @@ class Grenade(pygame.sprite.Sprite):
 
 # create sprite group
 bullet_group = pygame.sprite.Group()
+grenade_group = pygame.sprite.Group()
 
 
 player = soldier('player', 200, 200, 3, 5, 20)
@@ -220,13 +222,19 @@ while run:
 
     # update and draw group
     bullet_group.update()
+    grenade_group.update()
     bullet_group.draw(screen)
+    grenade_group.draw(screen)
     
     # update player action
     if player.alive:
         # shoot bullets
         if shoot:   
             player.shoot()
+        # throw grenade
+        elif grenade:
+            grenade = Grenade(player.rect.centerx, player.rect.centery, player.direction)
+            grenade_group.add(grenade)
         if player.in_air:
             player.update_action(2) # 2 = jump 
         elif moving_left or moving_right:
