@@ -251,6 +251,8 @@ while run:
                 run = False
             if event.key == pygame.K_SPACE:
                 shoot = True
+            if event.key == pygame.K_q:
+                grenade = True
                 
         # Keyboard button released
         if event.type == pygame.KEYUP:
@@ -260,6 +262,8 @@ while run:
                 moving_right = False
             if event.key == pygame.K_SPACE:
                 shoot = False
+            if event.key == pygame.K_q:
+                grenade = False
             
     pygame.display.update()
 pygame.quit()
