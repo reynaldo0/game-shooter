@@ -43,6 +43,8 @@ class soldier(pygame.sprite.Sprite):
         self.ammo = ammo
         self.start_ammo = ammo
         self.shoot_cooldown = 0
+        self.health = 100
+        self.max_health = self.health
         self.direction = 1
         self.jump = False
         self.in_air = True
@@ -55,7 +57,7 @@ class soldier(pygame.sprite.Sprite):
         self.action = 0
         
         # load all images for the players
-        animation_types = ['Idle','Run','Jump']
+        animation_types = ['Idle','Run','Jump', 'Death']
         for animation in animation_types:
             # reset temporary list of images
             temp_list = []
@@ -74,6 +76,7 @@ class soldier(pygame.sprite.Sprite):
         self.rect.center = (x,y)
     
     def update(self):
+        self.check_alive()
         self.update_animation()
         # update cooldown
         if self.shoot_cooldown > 0:
@@ -135,7 +138,10 @@ class soldier(pygame.sprite.Sprite):
             self.frame_index += 1
         # if the animation has run out the reset back to the start
         if self.frame_index >= len(self.animation_list[self.action]):
-            self.frame_index =  0 
+            if self.action == 3:
+                self.frame_index = len(self.animation_list[self.action]) - 1
+            else:
+                self.frame_index =  0 
     
     def update_action(self, new_action):
         if new_action != self.action:
@@ -143,7 +149,13 @@ class soldier(pygame.sprite.Sprite):
             # update animation setting 
             self.frame_index = 0
             self.update_time =  pygame.time.get_ticks()
-            
+        
+    def check_alive(self):
+        if self.health <= 0:
+            self.health = 0
+            self.speed = 0
+            self.alive = False
+            self.update_action(3)
     
     def draw(self):
         screen.blit(pygame.transform.flip(self.image, self.flip, False),self.rect)
@@ -167,9 +179,11 @@ class Bullet(pygame.sprite.Sprite):
         # check collision with character
         if pygame.sprite.spritecollide(player, bullet_group, False):
             if player.alive:
+                player.health -= 5
                 self.kill()
         if pygame.sprite.spritecollide(enemy, bullet_group, False):
             if enemy.alive:
+                enemy.health -= 25
                 self.kill()
 
 # create sprite group
@@ -184,8 +198,11 @@ while run:
     
     clock.tick(FPS)
     draw_bg()
+
     player.update()
     player.draw()
+
+    enemy.update()
     enemy.draw()
 
     # update and draw group
