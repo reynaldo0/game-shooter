@@ -21,6 +21,7 @@ moving_left = False
 moving_right = False
 shoot = False
 grenade = False
+grenade_thrown = False
 
 # load images
 # bullet
@@ -232,9 +233,11 @@ while run:
         if shoot:   
             player.shoot()
         # throw grenade
-        elif grenade:
-            grenade = Grenade(player.rect.centerx, player.rect.centery, player.direction)
+        elif grenade and grenade_thrown == False:
+            grenade = Grenade(player.rect.centerx + (0.5 * player.rect.size[0] * player.direction),\
+                        player.rect.top , player.direction)
             grenade_group.add(grenade)
+            grenade_thrown = True
         if player.in_air:
             player.update_action(2) # 2 = jump 
         elif moving_left or moving_right:
@@ -272,6 +275,7 @@ while run:
                 shoot = False
             if event.key == pygame.K_q:
                 grenade = False
-            
+                grenade_thrown = False
+                
     pygame.display.update()
 pygame.quit()
