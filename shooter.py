@@ -164,6 +164,14 @@ class Bullet(pygame.sprite.Sprite):
         if self.rect.right < 0 or self.rect.left > SCREEN_WIDTH:
             self.kill()
 
+        # check collision with character
+        if pygame.sprite.spritecollide(player, bullet_group, False):
+            if player.alive:
+                self.kill()
+        if pygame.sprite.spritecollide(enemy, bullet_group, False):
+            if enemy.alive:
+                self.kill()
+
 # create sprite group
 bullet_group = pygame.sprite.Group()
 
