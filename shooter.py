@@ -29,6 +29,15 @@ grenade_thrown = False
 bullet_img = pygame.image.load('assets/img/icons/bullet.png').convert_alpha()
 # grenade
 grenade_img = pygame.image.load('assets/img/icons/grenade.png').convert_alpha()
+# box
+health_box_img = pygame.image.load('assets/img/icons/health_box.png').convert_alpha()
+ammo_box_img = pygame.image.load('assets/img/icons/ammo_box.png').convert_alpha()
+grenade_box_img = pygame.image.load('assets/img/icons/grenade_box.png').convert_alpha()
+item_boxes = {
+    'Health': health_box_img,
+    'Ammo': ammo_box_img,
+    'Grenade': grenade_box_img,
+}
 
 # define color
 BG = (144, 201, 120)
@@ -166,6 +175,15 @@ class soldier(pygame.sprite.Sprite):
     def draw(self):
         screen.blit(pygame.transform.flip(self.image, self.flip, False),self.rect)
         
+class ItemBox(pygame.sprite.Sprite):
+    def __init__(self, item_type, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        self.item_type = item_type
+        self.image = item_boxes[self.item_type]
+        self.rect = self.image.get_rect()
+        self.rect.midtop = (x + TILE_SIZE // 2, y + (TILE_SIZE - self.image.get_height()))
+
+
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y, direction):
         pygame.sprite.Sprite.__init__(self)
