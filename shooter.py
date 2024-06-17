@@ -221,6 +221,14 @@ class Grenade(pygame.sprite.Sprite):
         self.rect.x += dx
         self.rect.y += dy
 
+        # countdown timer
+        self.timer -= 1
+        if self.timer <= 0:
+            self.kill()
+            explosion = Explosion(self.rect.x, self.rect.y, 0.5)
+            explosion_group.add(explosion) 
+
+
 class Explosion(pygame.sprite.Sprite):
     def __init__(self, x, y, scale):
         pygame.sprite.Sprite.__init__(self)
@@ -261,7 +269,7 @@ while run:
 
     grenade_group.update()
     grenade_group.draw(screen)
-    
+
     explosion_group.update()
     explosion_group.draw(screen)
     
