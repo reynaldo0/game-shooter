@@ -174,6 +174,7 @@ class soldier(pygame.sprite.Sprite):
     
     def draw(self):
         screen.blit(pygame.transform.flip(self.image, self.flip, False),self.rect)
+        pygame.draw.rect(screen, RED, self.rect, 1)
         
 class ItemBox(pygame.sprite.Sprite):
     def __init__(self, item_type, x, y):
@@ -183,6 +184,20 @@ class ItemBox(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.midtop = (x + TILE_SIZE // 2, y + (TILE_SIZE - self.image.get_height()))
 
+    def update(self):
+        # check if player has pick up the box
+        if pygame.sprite.collide_rect(self, player):
+            # check box 
+            if self.item_type == 'Health':
+                player.health += 25
+                if player.health > player.max_health:
+                    player.health = player.max_health
+            elif self.item_type == 'Ammo':
+                player.ammo += 15
+            elif self.item_type == 'Grenade':
+                player.grenades += 3
+            # delete item box
+            self.kill()
 
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y, direction):
@@ -292,11 +307,11 @@ explosion_group = pygame.sprite.Group()
 item_box_group = pygame.sprite.Group()
 
 # temp - create item boxes
-item_box = ItemBox('Health', 100, 300)
+item_box = ItemBox('Health', 100, 260)
 item_box_group.add(item_box)
-item_box = ItemBox('Ammo', 400, 300)
+item_box = ItemBox('Ammo', 400, 260)
 item_box_group.add(item_box)
-item_box = ItemBox('Grenade', 500, 300)
+item_box = ItemBox('Grenade', 500, 260)
 item_box_group.add(item_box)
 
 player = soldier('player', 200, 200, 3, 5, 20, 5)
