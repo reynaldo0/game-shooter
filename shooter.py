@@ -42,6 +42,14 @@ item_boxes = {
 # define color
 BG = (144, 201, 120)
 RED = (255, 0, 0)
+WHITE = (255, 255, 255)
+
+# define font
+font = pygame.font.SysFont('Futura', 30)
+
+def draw_text(text, font, text_col, x, y):
+    img = font.render(text, True, text_col)
+    screen.blit(img, (x, y))
 
 def draw_bg():
     screen.fill(BG)
@@ -174,7 +182,6 @@ class soldier(pygame.sprite.Sprite):
     
     def draw(self):
         screen.blit(pygame.transform.flip(self.image, self.flip, False),self.rect)
-        pygame.draw.rect(screen, RED, self.rect, 1)
         
 class ItemBox(pygame.sprite.Sprite):
     def __init__(self, item_type, x, y):
@@ -325,6 +332,8 @@ while run:
     
     clock.tick(FPS)
     draw_bg()
+    # show ammo
+    draw_text(f'AMMO = {player.ammo}', font, WHITE, 10, 35)
 
     player.update()
     player.draw()
