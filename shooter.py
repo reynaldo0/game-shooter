@@ -289,6 +289,15 @@ enemy_group = pygame.sprite.Group()
 bullet_group = pygame.sprite.Group()
 grenade_group = pygame.sprite.Group()
 explosion_group = pygame.sprite.Group()
+item_box_group = pygame.sprite.Group()
+
+# temp - create item boxes
+item_box = ItemBox('Health', 100, 300)
+item_box_group.add(item_box)
+item_box = ItemBox('Ammo', 400, 300)
+item_box_group.add(item_box)
+item_box = ItemBox('Grenade', 500, 300)
+item_box_group.add(item_box)
 
 player = soldier('player', 200, 200, 3, 5, 20, 5)
 enemy = soldier('enemy', 400, 200, 3, 5, 20, 0)
@@ -318,6 +327,9 @@ while run:
 
     explosion_group.update()
     explosion_group.draw(screen)
+
+    item_box_group.update()
+    item_box_group.draw(screen)
     
     # update player action
     if player.alive:
