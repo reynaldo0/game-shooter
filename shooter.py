@@ -15,6 +15,7 @@ FPS = 60
 
 # define game variable
 GRAVITY = 0.75
+TILE_SIZE = 40
 
 # define player action variable
 moving_left = False
@@ -186,10 +187,12 @@ class Bullet(pygame.sprite.Sprite):
             if player.alive:
                 player.health -= 5
                 self.kill()
-        if pygame.sprite.spritecollide(enemy, bullet_group, False):
-            if enemy.alive:
-                enemy.health -= 25
-                self.kill()
+        
+        for enemy in enemy_group:
+            if pygame.sprite.spritecollide(enemy, bullet_group, False):
+                if enemy.alive:
+                    enemy.health -= 25
+                    self.kill()
 
 class Grenade(pygame.sprite.Sprite):
     def __init__(self, x, y, direction):
@@ -227,7 +230,14 @@ class Grenade(pygame.sprite.Sprite):
             self.kill()
             explosion = Explosion(self.rect.x, self.rect.y, 0.5)
             explosion_group.add(explosion) 
-
+            # do damage to enemy
+            if abs(self.rect.centerx - player.rect.centerx) < TILE_SIZE * 2 and \
+                abs(self.rect.centery - player.rect.centery) < TILE_SIZE * 2:
+                player.health -= 50
+            for enemy in enemy_group:
+                if abs(self.rect.centerx - enemy.rect.centerx) < TILE_SIZE * 2 and \
+                    abs(self.rect.centery - enemy.rect.centery) < TILE_SIZE * 2:
+                    enemy.health -= 50
 
 class Explosion(pygame.sprite.Sprite):
     def __init__(self, x, y, scale):
@@ -254,15 +264,17 @@ class Explosion(pygame.sprite.Sprite):
             if self.frame_index >= len(self.images):
                 self.kill()
             else:
-                 self.image = self.images[self.frame_index]
+                self.image = self.images[self.frame_index]
 
 # create sprite group
+enemy_group = pygame.sprite.Group()
 bullet_group = pygame.sprite.Group()
 grenade_group = pygame.sprite.Group()
 explosion_group = pygame.sprite.Group()
 
 player = soldier('player', 200, 200, 3, 5, 20, 5)
 enemy = soldier('enemy', 400, 200, 3, 5, 20, 0)
+enemy_group.add(enemy)
 
 run = True
 while run:
