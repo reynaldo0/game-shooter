@@ -83,6 +83,7 @@ class soldier(pygame.sprite.Sprite):
         self.action = 0
         # create ai var
         self.move_counter = 0
+        self.vision = pygame.Rect(0, 0, 150, 20)
         self.idling = False
         self.idling_counter = 0
         
@@ -150,7 +151,7 @@ class soldier(pygame.sprite.Sprite):
     def shoot(self):
         if self.shoot_cooldown == 0 and self.ammo > 0:
             self.shoot_cooldown = 20
-            bullet = Bullet(self.rect.centerx + (0.6 * self.rect.size[0] * self.direction), self.rect.centery, self.direction)
+            bullet = Bullet(self.rect.centerx + (0.75 * self.rect.size[0] * self.direction), self.rect.centery, self.direction)
             bullet_group.add(bullet)
             # reduce ammo
             self.ammo -= 1
@@ -171,6 +172,9 @@ class soldier(pygame.sprite.Sprite):
                 self.move(ai_moving_left, ai_moving_right)
                 self.update_action(1) # 1 = run
                 self.move_counter += 1
+                # update ai vision as the enemy move
+                self.vision.center = (self.rect.centerx + 75 * self.direction, self.rect.centery)
+                pygame.draw.rect(screen, RED, self.vision)
                 
                 if self.move_counter > TILE_SIZE:
                     self.direction *= -1
