@@ -206,6 +206,19 @@ class ItemBox(pygame.sprite.Sprite):
             # delete item box
             self.kill()
 
+class HealthBar():
+    def __init__(self, x, y, health, max_health):
+        self.x = x
+        self.y = y
+        self.health = health
+        self.max_health = max_health
+
+    def draw(self, health):
+        # update with new health
+        self.health = health
+        
+        pygame.draw.rect(screen, RED, (self.x, self.y, 150, 20))
+
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y, direction):
         pygame.sprite.Sprite.__init__(self)
