@@ -216,7 +216,7 @@ class HealthBar():
     def draw(self, health):
         # update with new health
         self.health = health
-        
+
         pygame.draw.rect(screen, RED, (self.x, self.y, 150, 20))
 
 class Bullet(pygame.sprite.Sprite):
@@ -335,6 +335,8 @@ item_box = ItemBox('Grenade', 500, 260)
 item_box_group.add(item_box)
 
 player = soldier('player', 200, 200, 3, 5, 20, 5)
+health_bar = HealthBar(10, 10, player.health, player.health)
+
 enemy = soldier('enemy', 400, 200, 3, 5, 20, 0)
 enemy2 = soldier('enemy', 300, 300, 3, 5, 20, 0)
 enemy_group.add(enemy)
@@ -345,6 +347,8 @@ while run:
     
     clock.tick(FPS)
     draw_bg()
+    # show player health
+    health_bar.draw(player.health)
     # show ammo
     draw_text('AMMO = ', font, WHITE, 10, 35)
     for x in range(player.ammo):
