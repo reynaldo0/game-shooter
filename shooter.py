@@ -150,6 +150,15 @@ class soldier(pygame.sprite.Sprite):
             # reduce ammo
             self.ammo -= 1
 
+    def ai(self):
+        if self.alive and player.alive:
+            if self.direction == 1:
+                ai_moving_right = True
+            else:
+                ai_moving_right = False
+            ai_moving_left = not ai_moving_right
+            self.move(ai_moving_left, ai_moving_right)
+
     def update_animation(self):
         # update animation
         ANIMATION_COOLDOWN = 100
@@ -340,11 +349,11 @@ item_box_group.add(item_box)
 item_box = ItemBox('Grenade', 500, 260)
 item_box_group.add(item_box)
 
-player = soldier('player', 200, 200, 3, 5, 20, 5)
+player = soldier('player', 200, 200, 1.65, 5, 20, 5)
 health_bar = HealthBar(10, 10, player.health, player.health)
 
-enemy = soldier('enemy', 400, 200, 3, 5, 20, 0)
-enemy2 = soldier('enemy', 300, 300, 3, 5, 20, 0)
+enemy = soldier('enemy', 400, 200, 1.65, 5, 20, 0)
+enemy2 = soldier('enemy', 300, 200, 1.65, 5, 20, 0)
 enemy_group.add(enemy)
 enemy_group.add(enemy2)
 
