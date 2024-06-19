@@ -516,6 +516,15 @@ while run:
     item_box_group.update()
     item_box_group.draw(screen)
     
+    decoration_group.update()
+    decoration_group.draw(screen)
+    
+    water_group.update()
+    water_group.draw(screen)
+    
+    exit_group.update()
+    exit_group.draw(screen)
+    
     # update player action
     if player.alive:
         # shoot bullets
