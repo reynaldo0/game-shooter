@@ -1,6 +1,7 @@
 import pygame
 import os
 import random
+import csv
 
 pygame.init()
 
@@ -16,7 +17,11 @@ FPS = 60
 
 # define game variable
 GRAVITY = 0.75
-TILE_SIZE = 40
+ROWS = 16
+COLS = 150
+TILE_SIZE = SCREEN_HEIGHT // ROWS
+TILE_TYPES = 21
+level = 1
 
 # define player action variable
 moving_left = False
@@ -26,6 +31,12 @@ grenade = False
 grenade_thrown = False
 
 # load images
+# store tile and a list
+img_list = []
+for x in range(TILE_TYPES):
+    img = pygame.image.load(f'assets/img/tile/{x}.png')
+    img = pygame.transform.scale(img, (TILE_SIZE, TILE_SIZE))
+    img_list.append(img)
 # bullet
 bullet_img = pygame.image.load('assets/img/icons/bullet.png').convert_alpha()
 # grenade
@@ -225,6 +236,58 @@ class soldier(pygame.sprite.Sprite):
     def draw(self):
         screen.blit(pygame.transform.flip(self.image, self.flip, False),self.rect)
         
+class World():
+    def __init__(self):
+        self.obstacle_list = []
+
+    def process_data(self, data):
+        self.obstacle_list = []
+        player = None
+        health_bar = None
+        for y, row in enumerate(data):
+            for x, tile in enumerate(row):
+                if tile >= 0:
+                    img = img_list[tile]
+                    img_rect = img.get_rect()
+                    img_rect.x = x * TILE_SIZE
+                    img_rect.y = y * TILE_SIZE
+                    tile_data = (img, img_rect)
+                    if tile >= 0 and tile <= 8:
+                        self.obstacle_list.append(tile_data)
+                    elif tile >= 9 and tile <= 10:
+                        pass # water
+                    elif tile >= 11 and tile <=14:
+                        pass # decoration
+                    elif tile == 15: # player
+                        player = soldier('player', x * TILE_SIZE, y * TILE_SIZE, 1.65, 5, 20, 5)
+                        health_bar = HealthBar(10, 10, player.health, player.health)
+                    elif tile == 16: # enemy
+                        enemy = soldier('enemy', x * TILE_SIZE, y * TILE_SIZE, 1.65, 2, 20, 0)
+                        enemy_group.add(enemy)
+                    elif tile == 17: # ammo box
+                        item_box = ItemBox('Ammo', x * TILE_SIZE, y * TILE_SIZE)
+                        item_box_group.add(item_box)
+                    elif tile == 18: # grenade box
+                        item_box = ItemBox('Grenade', x * TILE_SIZE, y * TILE_SIZE)
+                        item_box_group.add(item_box)
+                    elif tile == 19: # health box
+                        item_box = ItemBox('Health', x * TILE_SIZE, y * TILE_SIZE)
+                        item_box_group.add(item_box)
+                    elif tile == 20: # exit
+                        pass
+        
+        # Jika tidak menemukan player pada data level, buat default player
+        if player is None:
+            print("Warning: Player not defined in level data. Creating default player.")
+            player = soldier('player', 100, 100, 1.65, 5, 20, 5)
+            health_bar = HealthBar(10, 10, player.health, player.health)
+        
+        return player, health_bar
+
+    def draw(self):
+        for tile in self.obstacle_list:
+            screen.blit(tile[0], tile[1])
+
 class ItemBox(pygame.sprite.Sprite):
     def __init__(self, item_type, x, y):
         pygame.sprite.Sprite.__init__(self)
@@ -372,27 +435,28 @@ grenade_group = pygame.sprite.Group()
 explosion_group = pygame.sprite.Group()
 item_box_group = pygame.sprite.Group()
 
-# temp - create item boxes
-item_box = ItemBox('Health', 100, 260)
-item_box_group.add(item_box)
-item_box = ItemBox('Ammo', 400, 260)
-item_box_group.add(item_box)
-item_box = ItemBox('Grenade', 500, 260)
-item_box_group.add(item_box)
-
-player = soldier('player', 200, 200, 1.65, 5, 20, 5)
-health_bar = HealthBar(10, 10, player.health, player.health)
-
-enemy = soldier('enemy', 500, 200, 1.65, 2, 20, 0)
-enemy2 = soldier('enemy', 300, 200, 1.65, 2, 20, 0)
-enemy_group.add(enemy)
-enemy_group.add(enemy2)
+# create empty tile list
+world_data = []
+for row in range(ROWS):
+    r = [-1] * COLS
+    world_data.append(r)
+# load in level data and create world
+with open(f'level{level}_data.csv', newline='') as csvfile:
+    reader = csv.reader(csvfile, delimiter=',')
+    for x, row in enumerate(reader):
+        for y, tile in enumerate(row):
+            world_data[x][y] = int(tile)
+world = World()
+player, health_bar = world.process_data(world_data)
 
 run = True
 while run:
     
     clock.tick(FPS)
+    # upgrade bg
     draw_bg()
+    # draw world map
+    world.draw()
     # show player health
     health_bar.draw(player.health)
     # show ammo
@@ -400,7 +464,7 @@ while run:
     for x in range(player.ammo):
         screen.blit(bullet_img, (100 + (x * 10), 40))
     # show Grenades
-    draw_text(f'GREMADES = ', font, WHITE, 10, 60)
+    draw_text(f'GRENADES = ', font, WHITE, 10, 60)
     for x in range(player.grenades):
         screen.blit(grenade_img, (150 + (x * 15), 62))
 
