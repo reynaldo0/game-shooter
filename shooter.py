@@ -276,7 +276,8 @@ class World():
                         item_box = ItemBox('Health', x * TILE_SIZE, y * TILE_SIZE)
                         item_box_group.add(item_box)
                     elif tile == 20: # exit
-                        pass
+                        exit = Exit(img, x * TILE_SIZE, y * TILE_SIZE)
+                        exit_group.add(exit)
         
         # Jika tidak menemukan player pada data level, buat default player
         if player is None:
@@ -459,6 +460,7 @@ explosion_group = pygame.sprite.Group()
 item_box_group = pygame.sprite.Group()
 decoration_group = pygame.sprite.Group()
 water_group = pygame.sprite.Group()
+exit_group = pygame.sprite.Group()
 
 # create empty tile list
 world_data = []
