@@ -257,7 +257,8 @@ class World():
                     elif tile >= 9 and tile <= 10:
                         pass # water
                     elif tile >= 11 and tile <=14:
-                        pass # decoration
+                        decoration = Decoration(img, x * TILE_SIZE, y * TILE_SIZE)
+                        decoration_group.add(decoration)
                     elif tile == 15: # player
                         player = soldier('player', x * TILE_SIZE, y * TILE_SIZE, 1.65, 5, 20, 5)
                         health_bar = HealthBar(10, 10, player.health, player.health)
@@ -441,6 +442,7 @@ bullet_group = pygame.sprite.Group()
 grenade_group = pygame.sprite.Group()
 explosion_group = pygame.sprite.Group()
 item_box_group = pygame.sprite.Group()
+decoration_group = pygame.sprite.Group()
 
 # create empty tile list
 world_data = []
