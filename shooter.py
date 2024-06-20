@@ -116,6 +116,8 @@ class soldier(pygame.sprite.Sprite):
         self.image = self.animation_list[self.action][self.frame_index]
         self.rect = self.image.get_rect()
         self.rect.center = (x,y)
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
     
     def update(self):
         self.check_alive()
@@ -150,11 +152,23 @@ class soldier(pygame.sprite.Sprite):
             self.vel_y
         dy += self.vel_y
         
-        # check collision with floor
-        if self.rect.bottom + dy > 300:
-            dy = 300 - self.rect.bottom
-            self.in_air = False
-            
+        # check collision
+        for tile in world.obstacle_list:
+            # check collision in x direc
+            if tile [1].colliderect(self.rect.x + dx, self.rect.y, self.width, self.height):
+                dx = 0
+            # y direc
+            if tile [1].colliderect(self.rect.x, self.rect.y + dy, self.width, self.height):
+                # i.e jumping
+                if self.vel_y < 0:
+                    self.vel_y = 0
+                    dy = tile[1].bottom - self.rect.top
+                # i.e falling
+                elif self.vel_y >= 0:
+                    self.vel_y = 0
+                    self.in_air = False 
+                    dy = tile[1].top - self.rect.bottom
+                     
         # update rect position
         self.rect.x += dx 
         self.rect.y += dy
