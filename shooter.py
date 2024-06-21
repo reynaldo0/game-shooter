@@ -17,10 +17,12 @@ FPS = 60
 
 # define game variable
 GRAVITY = 0.75
+SCROOL_THRESH = 200
 ROWS = 16
 COLS = 150
 TILE_SIZE = SCREEN_HEIGHT // ROWS
 TILE_TYPES = 21
+screen_scroll = 0
 level = 1
 
 # define player action variable
@@ -134,7 +136,8 @@ class soldier(pygame.sprite.Sprite):
             self.shoot_cooldown -= 1
 
     def move(self, moving_left, moving_right):
-        # reser movement variable
+        # reset movement variable
+        screen_scroll = 0
         dx = 0
         dy = 0 
         # variable moving variable left or right
@@ -179,6 +182,14 @@ class soldier(pygame.sprite.Sprite):
         # update rect position
         self.rect.x += dx 
         self.rect.y += dy
+
+        # update scroll based on player position
+        if self.char_type == 'player':
+             if self.rect.right > SCREEN_WIDTH - SCROOL_THRESH or self.rect.left < SCROOL_THRESH:
+                  self.rect.x -= dx
+                  screen_scroll = -dx
+
+        return screen_scroll
         
     def shoot(self):
         if self.shoot_cooldown == 0 and self.ammo > 0:
@@ -303,6 +314,7 @@ class World():
 
 	def draw(self):
 		for tile in self.obstacle_list:
+			tile[1][0] += screen_scroll
 			screen.blit(tile[0], tile[1])
 
 class Decoration(pygame.sprite.Sprite):
@@ -572,7 +584,7 @@ while run:
             player.update_action(1) # 1 = run 
         else:
             player.update_action(0) # 0 = idle
-        player.move(moving_left, moving_right )
+        screen_scroll = player.move(moving_left, moving_right)
     
     for event in pygame.event.get():
         # quit game 
