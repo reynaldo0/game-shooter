@@ -232,7 +232,7 @@ class soldier(pygame.sprite.Sprite):
                     self.idling_counter -= 1
                     if self.idling_counter <= 0:
                         self.idling = False
-                        
+
         # scrool
         self.rect.x += screen_scroll
 
@@ -336,7 +336,9 @@ class Water(pygame.sprite.Sprite):
         self.image = img
         self.rect = self.image.get_rect()
         self.rect.midtop = (x + TILE_SIZE // 2, y + (TILE_SIZE - self.image.get_height()))
-    
+
+    def update(self):
+         self.rect.x += screen_scroll
 
 class Exit(pygame.sprite.Sprite):
     def __init__(self, img, x, y):
@@ -344,6 +346,9 @@ class Exit(pygame.sprite.Sprite):
         self.image = img
         self.rect = self.image.get_rect()
         self.rect.midtop = (x + TILE_SIZE // 2, y + (TILE_SIZE - self.image.get_height()))
+
+    def update(self):
+         self.rect.x += screen_scroll
 
 class ItemBox(pygame.sprite.Sprite):
     def __init__(self, item_type, x, y):
@@ -354,6 +359,8 @@ class ItemBox(pygame.sprite.Sprite):
         self.rect.midtop = (x + TILE_SIZE // 2, y + (TILE_SIZE - self.image.get_height()))
 
     def update(self):
+        # scroll
+        self.rect.x += screen_scroll
         # check if player has pick up the box
         if pygame.sprite.collide_rect(self, player):
             # check box 
@@ -396,7 +403,7 @@ class Bullet(pygame.sprite.Sprite):
 
     def update(self):
         # move bullet
-        self.rect.x += (self.direction * self.speed)
+        self.rect.x += (self.direction * self.speed) + screen_scroll
         # bullet of screen 
         if self.rect.right < 0 or self.rect.left > SCREEN_WIDTH:
             self.kill()
@@ -454,7 +461,7 @@ class Grenade(pygame.sprite.Sprite):
                     dy = tile[1].top - self.rect.bottom
 
         # update grenade position
-        self.rect.x += dx
+        self.rect.x += dx + screen_scroll
         self.rect.y += dy
 
         # countdown timer
@@ -487,6 +494,9 @@ class Explosion(pygame.sprite.Sprite):
         self.counter = 0
     
     def update(self):
+        # scroll
+        self.rect.x += screen_scroll
+
         EXPLOSION_SPEED = 4
         # update explosion animation
         self.counter += 1
