@@ -181,6 +181,11 @@ class soldier(pygame.sprite.Sprite):
                     self.vel_y = 0
                     self.in_air = False 
                     dy = tile[1].top - self.rect.bottom
+        
+        # off screen player move
+        if self.char_type == 'player':
+            if self.rect.left + dx < 0 or self.rect.right + dx > SCREEN_WIDTH:
+                dx = 0
                      
         # update rect position
         self.rect.x += dx 
