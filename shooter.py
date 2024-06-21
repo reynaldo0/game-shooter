@@ -23,6 +23,7 @@ COLS = 150
 TILE_SIZE = SCREEN_HEIGHT // ROWS
 TILE_TYPES = 21
 screen_scroll = 0
+bg_scroll = 0
 level = 1
 
 # define player action variable
@@ -74,10 +75,12 @@ def draw_text(text, font, text_col, x, y):
 
 def draw_bg():
     screen.fill(BG)
-    screen.blit(sky_img, (0 , 0))  
-    screen.blit(mountain_img, (0 , SCREEN_HEIGHT - mountain_img.get_height() - 300))  
-    screen.blit(pine1_img, (0 , SCREEN_HEIGHT - pine1_img.get_height() - 150))  
-    screen.blit(pine2_img, (0 , SCREEN_HEIGHT - pine2_img.get_height()))  
+    width = sky_img.get_width()
+    for x in range(5):
+        screen.blit(sky_img, ((x * width) - bg_scroll , 0))  
+        screen.blit(mountain_img, ((x * width) - bg_scroll, SCREEN_HEIGHT - mountain_img.get_height() - 300))  
+        screen.blit(pine1_img, ((x * width) - bg_scroll, SCREEN_HEIGHT - pine1_img.get_height() - 150))  
+        screen.blit(pine2_img, ((x * width)  - bg_scroll, SCREEN_HEIGHT - pine2_img.get_height()))  
 
 class soldier(pygame.sprite.Sprite):
     def __init__(self, char_type, x, y, scale, speed, ammo, grenades):
@@ -602,6 +605,7 @@ while run:
         else:
             player.update_action(0) # 0 = idle
         screen_scroll = player.move(moving_left, moving_right)
+        bg_scroll -= screen_scroll
     
     for event in pygame.event.get():
         # quit game 
