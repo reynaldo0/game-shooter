@@ -374,6 +374,10 @@ class Bullet(pygame.sprite.Sprite):
         # bullet of screen 
         if self.rect.right < 0 or self.rect.left > SCREEN_WIDTH:
             self.kill()
+        # check collision w level
+        for tile in world.obstacle_list:
+             if tile[1].colliderect(self.rect):
+                  self.kill()
 
         # check collision with character
         if pygame.sprite.spritecollide(player, bullet_group, False):
