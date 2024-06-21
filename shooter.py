@@ -66,9 +66,7 @@ def draw_text(text, font, text_col, x, y):
     screen.blit(img, (x, y))
 
 def draw_bg():
-    screen.fill(BG)
-    pygame.draw.line(screen, RED, (0,300), (SCREEN_WIDTH, 300))
-    
+    screen.fill(BG)    
 
 class soldier(pygame.sprite.Sprite):
     def __init__(self, char_type, x, y, scale, speed, ammo, grenades):
