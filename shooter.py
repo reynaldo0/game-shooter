@@ -568,8 +568,10 @@ while run:
         # draw menu
         screen.fill(BG)
         # add button
-        start_button.draw(screen)
-        exit_button.draw(screen)
+        if start_button.draw(screen):
+             start_game = True
+        if exit_button.draw(screen):
+            run = False
     else:
         # upgrade bg
         draw_bg()
