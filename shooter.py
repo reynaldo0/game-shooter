@@ -188,7 +188,8 @@ class soldier(pygame.sprite.Sprite):
 
         # update scroll based on player position
         if self.char_type == 'player':
-             if self.rect.right > SCREEN_WIDTH - SCROOL_THRESH or self.rect.left < SCROOL_THRESH:
+             if (self.rect.right > SCREEN_WIDTH - SCROOL_THRESH and bg_scroll < (world.level_length * TILE_SIZE) - SCREEN_WIDTH)\
+                or (self.rect.left < SCROOL_THRESH and bg_scroll > abs(dx)):
                   self.rect.x -= dx
                   screen_scroll = -dx
 
@@ -279,6 +280,7 @@ class World():
 		self.obstacle_list = []
 
 	def process_data(self, data):
+		self.level_length = len(data[0])
 		#iterate through each value in level data file
 		for y, row in enumerate(data):
 			for x, tile in enumerate(row):
@@ -316,6 +318,7 @@ class World():
 						exit_group.add(exit)
 
 		return player, health_bar
+     
 
 
 	def draw(self):
