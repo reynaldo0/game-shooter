@@ -217,6 +217,11 @@ class soldier(pygame.sprite.Sprite):
         if pygame.sprite.spritecollide(self, water_group, False):
              self.health = 0
 
+        # check for collision exit
+        level_complete = False
+        if pygame.sprite.spritecollide(self, exit_group, False):
+            level_complete = True
+
         # check if fallen of the map
         if self.rect.bottom > SCREEN_HEIGHT:
             self.health = 0
@@ -237,7 +242,7 @@ class soldier(pygame.sprite.Sprite):
                   self.rect.x -= dx
                   screen_scroll = -dx
 
-        return screen_scroll
+        return screen_scroll, level_complete
         
     def shoot(self):
         if self.shoot_cooldown == 0 and self.ammo > 0:
@@ -665,7 +670,7 @@ while run:
                 player.update_action(1) # 1 = run 
             else:
                 player.update_action(0) # 0 = idle
-            screen_scroll = player.move(moving_left, moving_right)
+            screen_scroll, level_complete = player.move(moving_left, moving_right)
             bg_scroll -= screen_scroll
         else:
             screen_scroll = 0
