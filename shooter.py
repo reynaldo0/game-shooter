@@ -39,6 +39,7 @@ grenade_thrown = False
 # button images 
 start_img = pygame.image.load('assets/img/start_btn.png').convert_alpha()
 exit_img = pygame.image.load('assets/img/exit_btn.png').convert_alpha()
+restart_img = pygame.image.load('assets/img/restart_btn.png').convert_alpha()
 
 # background
 pine1_img = pygame.image.load('assets/img/Background/pine1.png').convert_alpha()
@@ -542,6 +543,7 @@ class Explosion(pygame.sprite.Sprite):
 # create button
 start_button = button.Button(SCREEN_WIDTH // 2 - 130, SCREEN_HEIGHT // 2 - 150, start_img, 1)
 exit_button = button.Button(SCREEN_WIDTH // 2 - 110, SCREEN_HEIGHT // 2 + 50, exit_img, 1)
+restart_button = button.Button(SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 - 50, restart_img, 2)
 
 # create sprite group
 enemy_group = pygame.sprite.Group()
