@@ -38,10 +38,16 @@ shoot = False
 grenade = False
 grenade_thrown = False
 
-# load music
+# load music and sound
 pygame.mixer.music.load('assets/audio/music2.mp3')
 pygame.mixer.music.set_volume(0.3)
 pygame.mixer.music.play(-1, 0.0, 5000)
+jump_sound = pygame.mixer.Sound('assets/audio/jump.wav')
+jump_sound.set_volume(0.5)
+shot_sound = pygame.mixer.Sound('assets/audio/shot.wav')
+shot_sound.set_volume(0.5)
+grenade_sound = pygame.mixer.Sound('assets/audio/grenade.wav')
+grenade_sound.set_volume(0.5)
 
 # load images
 # button images 
