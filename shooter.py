@@ -648,6 +648,10 @@ while run:
                 player.update_action(0) # 0 = idle
             screen_scroll = player.move(moving_left, moving_right)
             bg_scroll -= screen_scroll
+        else:
+            screen_scroll = 0
+            if restart_button.draw(screen):
+                bg_scroll = 0
     
     for event in pygame.event.get():
         # quit game 
