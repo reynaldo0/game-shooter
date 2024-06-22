@@ -192,6 +192,10 @@ class soldier(pygame.sprite.Sprite):
                     self.vel_y = 0
                     self.in_air = False 
                     dy = tile[1].top - self.rect.bottom
+
+        # collision for water
+        if pygame.sprite.spritecollide(self, water_group, False):
+             self.health = 0
         
         # off screen player move
         if self.char_type == 'player':
@@ -563,7 +567,6 @@ run = True
 while run:
     
     clock.tick(FPS)
-
     if start_game == False:
         # draw menu
         screen.fill(BG)
