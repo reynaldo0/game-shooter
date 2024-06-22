@@ -27,6 +27,7 @@ screen_scroll = 0
 bg_scroll = 0
 level = 1
 start_game = False 
+MAX_LEVELS = 3
 
 # define player action variable
 moving_left = False
@@ -672,6 +673,22 @@ while run:
                 player.update_action(0) # 0 = idle
             screen_scroll, level_complete = player.move(moving_left, moving_right)
             bg_scroll -= screen_scroll
+            # check is player is completed the level
+            if level_complete:
+                level += 1
+                bg_scroll = 0
+                world_data = reset_level()
+                if level <= MAX_LEVELS:
+                    # load in level data and create world
+                    with open(f'level{level}_data.csv', newline='') as csvfile:
+                        reader = csv.reader(csvfile, delimiter=',')
+                        for x, row in enumerate(reader):
+                            for y, tile in enumerate(row):
+                                world_data[x][y] = int(tile)
+                    world = World()
+                    player, health_bar = world.process_data(world_data)
+
+
         else:
             screen_scroll = 0
             if restart_button.draw(screen):
