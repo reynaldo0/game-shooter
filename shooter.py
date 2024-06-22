@@ -101,6 +101,14 @@ def reset_level():
     water_group.empty()
     exit_group.empty()
 
+    # create empty tile list
+    data = []
+    for row in range(ROWS):
+        r = [-1] * COLS
+        data.append(r)
+
+    return data
+
 class soldier(pygame.sprite.Sprite):
     def __init__(self, char_type, x, y, scale, speed, ammo, grenades):
         pygame.sprite.Sprite.__init__(self)
@@ -663,6 +671,15 @@ while run:
             screen_scroll = 0
             if restart_button.draw(screen):
                 bg_scroll = 0
+                world_data = reset_level()
+                # load in level data and create world
+                with open(f'level{level}_data.csv', newline='') as csvfile:
+                    reader = csv.reader(csvfile, delimiter=',')
+                    for x, row in enumerate(reader):
+                        for y, tile in enumerate(row):
+                            world_data[x][y] = int(tile)
+                world = World()
+                player, health_bar = world.process_data(world_data)
     
     for event in pygame.event.get():
         # quit game 
