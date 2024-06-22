@@ -265,6 +265,7 @@ class soldier(pygame.sprite.Sprite):
             bullet_group.add(bullet)
             # reduce ammo
             self.ammo -= 1
+            shot_sound.play()
 
     def ai(self):
         if self.alive and player.alive:
@@ -537,6 +538,7 @@ class Grenade(pygame.sprite.Sprite):
         self.timer -= 1
         if self.timer <= 0:
             self.kill()
+            grenade_sound.play()
             explosion = Explosion(self.rect.x, self.rect.y, 0.5)
             explosion_group.add(explosion) 
             # do damage to enemy
@@ -728,6 +730,7 @@ while run:
                 moving_right = True
             if event.key == pygame.K_w and player.alive:
                 player.jump = True
+                jump_sound.play()
             if event.key == pygame.K_ESCAPE:
                 run = False
             if event.key == pygame.K_SPACE:
