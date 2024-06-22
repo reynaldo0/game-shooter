@@ -589,8 +589,13 @@ class ScreenFade():
         self.fade_counter = 0
 
     def fade(self):
+        fade_complete = False
         self.fade_counter += self.speed
         pygame.draw.rect(screen, self.colour, (0, 0, SCREEN_WIDTH, 0 + self.fade_counter))
+        if self.fade_counter >= SCREEN_WIDTH:
+            fade_complete = True
+
+        return fade_complete
     
 # create screen fades
 death_fade = ScreenFade(2, PINK, 4)
@@ -721,18 +726,18 @@ while run:
 
         else:
             screen_scroll = 0
-            death_fade.fade()
-            if restart_button.draw(screen):
-                bg_scroll = 0
-                world_data = reset_level()
-                # load in level data and create world
-                with open(f'level{level}_data.csv', newline='') as csvfile:
-                    reader = csv.reader(csvfile, delimiter=',')
-                    for x, row in enumerate(reader):
-                        for y, tile in enumerate(row):
-                            world_data[x][y] = int(tile)
-                world = World()
-                player, health_bar = world.process_data(world_data)
+            if death_fade.fade():
+                if restart_button.draw(screen):
+                    bg_scroll = 0
+                    world_data = reset_level()
+                    # load in level data and create world
+                    with open(f'level{level}_data.csv', newline='') as csvfile:
+                        reader = csv.reader(csvfile, delimiter=',')
+                        for x, row in enumerate(reader):
+                            for y, tile in enumerate(row):
+                                world_data[x][y] = int(tile)
+                    world = World()
+                    player, health_bar = world.process_data(world_data)
     
     for event in pygame.event.get():
         # quit game 
