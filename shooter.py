@@ -87,6 +87,7 @@ RED = (255, 0, 0)
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
 BLACK = (0, 0, 0)
+PINK = (235, 64, 54)
 
 # define font
 font = pygame.font.SysFont('Futura', 30)
@@ -590,6 +591,9 @@ class ScreenFade():
     def fade(self):
         self.fade_counter += self.speed
         pygame.draw.rect(screen, self.colour, (0, 0, SCREEN_WIDTH, 0 + self.fade_counter))
+    
+# create screen fades
+death_fade = ScreenFade(2, PINK, 4)
 
 # create button
 start_button = button.Button(SCREEN_WIDTH // 2 - 130, SCREEN_HEIGHT // 2 - 150, start_img, 1)
@@ -717,6 +721,7 @@ while run:
 
         else:
             screen_scroll = 0
+            death_fade.fade()
             if restart_button.draw(screen):
                 bg_scroll = 0
                 world_data = reset_level()
