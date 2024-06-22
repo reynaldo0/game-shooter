@@ -196,6 +196,10 @@ class soldier(pygame.sprite.Sprite):
         # collision for water
         if pygame.sprite.spritecollide(self, water_group, False):
              self.health = 0
+
+        # check if fallen of the map
+        if self.rect.bottom > SCREEN_HEIGHT:
+            self.health = 0
         
         # off screen player move
         if self.char_type == 'player':
